@@ -1,0 +1,3 @@
+HOLA MI PRIMER PROYECTO GIT
+C:\Users\daniel\Desktop\probandoGIT
+git init
