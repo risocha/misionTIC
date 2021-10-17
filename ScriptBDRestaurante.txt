@@ -1,0 +1,108 @@
+CREATE DATABASE restaurante;
+USE restaurante;
+
+
+CREATE TABLE tipo_persona(
+       id_tip int NOT NULL AUTO_INCREMENT,
+       descripcion_tp varchar(50),
+       CONSTRAINT pk_id_tip PRIMARY KEY(id_tip));
+
+CREATE TABLE persona_tipo_persona(
+       id_consecutivo int NOT NULL AUTO_INCREMENT,
+       id_per varchar(20) NOT NULL,
+       id_tip_fk int(11) NOT NULL,
+       nom_per varchar(50),
+       ape_per varchar(50),
+       dir_per varchar(80),
+       telefono_per varchar(20),
+       email_per varchar(20),
+       fecha_reg varchar(10) NOT NULL,
+       CONSTRAINT pk_id_consecutivo PRIMARY KEY(id_consecutivo),
+       CONSTRAINT Id_Per_Id_tip_fk UNIQUE KEY(id_per,id_tip_fk),
+       CONSTRAINT fk_tip_id FOREIGN KEY(id_tip_fk) REFERENCES tipo_persona(id_tip));
+
+CREATE TABLE tipo_venta(
+        id_tip_venta int NOT NULL AUTO_INCREMENT,
+        descripcion_venta varchar(80) NOT NULL,
+        CONSTRAINT pk_id_tip_venta PRIMARY KEY(id_tip_venta));
+
+CREATE TABLE tipo_atencion(
+         id_tip_atn int NOT NULL AUTO_INCREMENT,
+         descripcion_atn varchar(80) NOT NULL,
+         CONSTRAINT pk_id_tip_atn PRIMARY KEY(id_tip_atn));
+
+
+CREATE TABLE factura(
+        id_factura int NOT NULL AUTO_INCREMENT,
+        id_cliente_fk varchar(20) NOT NULL,
+        fecha_factura date NOT NULL,
+        id_tip_venta_fk int(11) NOT NULL,
+        id_tip_atn_fk   int(11) NOT NULL,
+        CONSTRAINT pk_id_factura PRIMARY KEY(id_factura),
+        CONSTRAINT fk_id_cliente FOREIGN KEY(id_cliente_fk) REFERENCES persona_tipo_persona(id_per),
+        CONSTRAINT fk_id_tip_venta FOREIGN KEY(id_tip_venta_fk) REFERENCES tipo_venta(id_tip_venta),
+        CONSTRAINT fk_id_tip_atn FOREIGN KEY(id_tip_atn_fk) REFERENCES tipo_atencion(id_tip_atn));
+
+CREATE TABLE platos_comida(
+        id_plato int NOT NULL AUTO_INCREMENT,
+        nom_plato varchar(80) NOT NULL,
+        descripcion_pc varchar(100) NOT NULL,
+        nom_region varchar(50),
+        precio_individual_plato double NOT NULL,
+        CONSTRAINT pk_id_plato PRIMARY KEY(id_plato));
+
+
+CREATE TABLE menu_diario(
+        id_menu_diario int NOT NULL AUTO_INCREMENT,
+        fecha_diaria date NOT NULL,
+        descripcion_md varchar(80) NOT NULL,
+        CONSTRAINT pk_idmenudiario_fdiaria PRIMARY KEY(id_menu_diario,fecha_diaria));
+
+CREATE TABLE det_menu_diario(
+         id_det_menu_diario int NOT NULL AUTO_INCREMENT,
+         id_menu_diario_fk int(11) NOT NULL,
+         id_plato_fk int(11) NOT NULL,
+         fecha_proceso date NOT NULL,
+         CONSTRAINT pk_id_det_menu_diario PRIMARY KEY(id_det_menu_diario),
+         CONSTRAINT fk_id_menu_diario FOREIGN KEY(id_menu_diario_fk) REFERENCES menu_diario(id_menu_diario),
+         CONSTRAINT fk_id_plato_dmd FOREIGN KEY(id_plato_fk) REFERENCES platos_comida(id_plato));
+
+CREATE TABLE detalle_factura(
+         id_detalle_factura int NOT NULL AUTO_INCREMENT,
+         id_factura_fk int(11) NOT NULL,
+         id_plato_fk int(11) NOT NULL,
+         num_platos int(11) NOT NULL,
+         fecha_df date,
+         CONSTRAINT pk_id_detalle_factura PRIMARY KEY(id_detalle_factura),
+         CONSTRAINT fk_id_factura FOREIGN KEY(id_factura_fk) REFERENCES factura(id_factura),
+         CONSTRAINT fk_id_plato_df FOREIGN KEY(id_plato_fk) REFERENCES det_menu_diario(id_plato_fk));
+
+CREATE TABLE tipo_vehiculo(
+         id_tip_veh int NOT NULL AUTO_INCREMENT,
+         nom_tip_veh varchar(50) NOT NULL,
+         CONSTRAINT pk_id_tip_veh PRIMARY KEY(id_tip_veh));
+
+CREATE TABLE parque_automotor(
+         id_pa int NOT NULL AUTO_INCREMENT,
+         id_tip_veh_fk int(11) NOT NULL,
+         placa varchar(10),
+         caracteristicas_pa varchar(60),
+         CONSTRAINT pk_id_pa PRIMARY KEY(id_pa),
+         CONSTRAINT fk_id_tip_veh FOREIGN KEY(id_tip_veh_fk) REFERENCES tipo_vehiculo(id_tip_veh));
+         
+
+
+CREATE TABLE detalle_domicilio(
+         id_detalle_domicilio int NOT NULL AUTO_INCREMENT,
+         id_factura_dom_fk int(11) NOT NULL,
+         dir_destino varchar(50) NOT NULL,
+         tel_destino varchar(20),
+         id_per_dom_fk varchar(20) NOT NULL,
+         id_pa_fk int(11),
+         CONSTRAINT pk_id_detalle_domicilio PRIMARY KEY(id_detalle_domicilio),
+         CONSTRAINT fk_id_factura_dom FOREIGN KEY(id_factura_dom_fk) REFERENCES factura(id_factura),
+         CONSTRAINT fk_id_per_dom FOREIGN KEY(id_per_dom_fk) REFERENCES persona_tipo_persona(id_per),
+         CONSTRAINT fk_id_pa FOREIGN KEY(id_pa_fk) REFERENCES parque_automotor(id_pa)); 
+         
+use restaurante;
+SHOW TABLES;
